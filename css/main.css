@@ -272,8 +272,8 @@ figure .pin-copy {
 
 .markdown-body .pl-smi,
 .markdown-body .pl-s .pl-s1 {
-  color: #24292e;
-}
+  color: var(--color-text-md-content);
+} 
 
 .markdown-body .pl-ent {
   color: #22863a;
@@ -334,13 +334,13 @@ figure .pin-copy {
 
 .markdown-body .pl-mi {
   font-style: italic;
-  color: #24292e;
-}
+  color: var(--color-text-md-content);
+} 
 
 .markdown-body .pl-mb {
   font-weight: bold;
-  color: #24292e;
-}
+  color: var(--color-text-md-content);
+} 
 
 .markdown-body .pl-md {
   color: #b31d28;
@@ -1068,6 +1068,11 @@ figure .pin-copy {
   --color-border-md-table: #4c566a;
 }
 
+/* Ensure markdown body text respects dark mode color variable */
+:root[color-mode="dark"] .markdown-body {
+  color: var(--color-text-md-content);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -1090,12 +1095,11 @@ body.hidden {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   line-height: 2;
-  color: #24292e;
   font-size: 1.6rem;
   line-height: 2;
   word-wrap: break-word;
-  color: var(--color-text-md-content)
-}
+  color: var(--color-text-md-content);
+} 
 
 @media (max-width: 768px) {
   .markdown-body {

@@ -15,7 +15,7 @@
   
   <title>
     
-      hexo 搭建2: 步骤简化  
+      Hexo blog 2: 步骤简化  
       
       
       |
@@ -149,11 +149,11 @@
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">hexo 搭建2: 步骤简化 </div>
+      <div class="post-title">Hexo blog 2: 步骤简化 </div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2026-02-02 14:46:14
+          2026-02-02 17:55:27
         </span>
         
               <span class="post-categories">
@@ -196,7 +196,7 @@
 </ol>
 <p>而github 上包括部署、存储，分别用两个仓库（使用自动部署工作流可以只用一个仓库），如果要囊括gitalk评论功能，还需要在github 上创建一个用于存储评论的应用仓库。</p>
 <h2 id="二、搭建步骤"><a href="#二、搭建步骤" class="headerlink" title="二、搭建步骤"></a>二、搭建步骤</h2><p>为了过程清晰方便理解，步骤一共分为以下几步：</p>
-<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><ol>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="- 环境搭建"></a>- 环境搭建</h3><ol>
 <li>安装 node.js；</li>
 </ol>
 <p>Node.js 的安装直接参考 <a target="_blank" rel="noopener" href="https://nodejs.org/en/download">菜鸟关于Node.js的教学</a>就可以了。</p>
@@ -206,7 +206,7 @@
 <p>安装完 Node.js 后，在命令行中使用 <code>npm</code> 安装 hexo 命令行工具：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
 
-<h3 id="博客搭建"><a href="#博客搭建" class="headerlink" title="博客搭建"></a>博客搭建</h3><ol>
+<h3 id="博客搭建"><a href="#博客搭建" class="headerlink" title="- 博客搭建"></a>- 博客搭建</h3><ol>
 <li>初始化blog目录，或者cd到blog目录下，执行 <code>hexo init</code>。</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init &lt;blog-name&gt;</span><br></pre></td></tr></table></figure>
@@ -224,7 +224,7 @@
 <p>如果要指定端口，比如指定为 8080，则可以使用 <code>hexo server -p 8080</code>。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server -p 8080</span><br></pre></td></tr></table></figure>
 
-<h3 id="远程部署"><a href="#远程部署" class="headerlink" title="远程部署"></a>远程部署</h3><ol>
+<h3 id="远程部署"><a href="#远程部署" class="headerlink" title="- 远程部署"></a>- 远程部署</h3><ol>
 <li>创建github pages 仓库；</li>
 </ol>
 <p>在github 上创建一个新的仓库，仓库名必须为 <code>&lt;username&gt;.github.io</code>，其中 <code>&lt;username&gt;</code> 是你的 github 用户名。（这一步很关键，决定你的站点使用的是你的用户站点而不是单个仓库的仓库站点，用户站点每个用户只能有一个，而单个仓库站点可以有多个）</p>
@@ -242,7 +242,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p>这样基本的部署就相当于完成了，修改主题也非常方便，不需要像我上一篇那样出了问题，还修改了主题的源代码。</p>
-<h3 id="评论功能"><a href="#评论功能" class="headerlink" title="评论功能"></a>评论功能</h3><ol>
+<h3 id="评论功能"><a href="#评论功能" class="headerlink" title="- 评论功能"></a>- 评论功能</h3><ol>
 <li>创建github 应用仓库；</li>
 </ol>
 <p>在github 上创建一个新的仓库，仓库名可以任意取，比如 <code>hexo-blog-comments</code>。在用户设置的最后一栏有个开发者设置，点击进入，创建一个新的应用，应用名可以任意取，比如 <code>hexo-blog-comments</code>。然后把域名、仓库信息填写到应用中，将应用的 ID 和密钥保存下来，后面会用。</p>
@@ -267,7 +267,7 @@
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2026/01/30/Hexo-Blog-%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" target="_self">
+              <a href="/2026/01/30/1-Hexo-blog-1-%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>上一页</span>
               </a>
@@ -276,7 +276,7 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2026-02-02 14:46:14
+              2026-02-02 17:55:27
             </span>
             
                   <span class="post-categories">
@@ -310,11 +310,6 @@
           </div>
           <div class="post-foot-prev">
             
-              <a href="/2026/02/02/hello-world/" target="_self">
-                <span>下一页</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
-            
           </div>
         </div>
       
@@ -327,7 +322,7 @@
     <div class="title">目录</div>
     <div class="catalog-content">
       
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%90%AD%E5%BB%BA%E6%A1%86%E6%9E%B6"><span class="toc-text">一、搭建框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4"><span class="toc-text">二、搭建步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA"><span class="toc-text">博客搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E9%83%A8%E7%BD%B2"><span class="toc-text">远程部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD"><span class="toc-text">评论功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-text">三、总结</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%90%AD%E5%BB%BA%E6%A1%86%E6%9E%B6"><span class="toc-text">一、搭建框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4"><span class="toc-text">二、搭建步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">- 环境搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA"><span class="toc-text">- 博客搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E9%83%A8%E7%BD%B2"><span class="toc-text">- 远程部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD"><span class="toc-text">- 评论功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-text">三、总结</span></a></li></ol>
       
     </div>
   </div>
