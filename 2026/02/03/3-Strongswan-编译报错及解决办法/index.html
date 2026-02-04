@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="Feng-jianwutong" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  <!-- 文章页 -->
+  <meta name="description" content="编译 Strongswan 时遇到的报错信息及解决办法" />
+  
+  
+  
+  <title>
+    
+      Strongswan 编译报错及解决办法 
+      
+      
+      |
+    
+     枫间梧桐
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/fe.png">
+    <link rel="icon" href="/images/fe.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img no-lazy src="/images/fengjianwutong.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">枫间梧桐</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">首页</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">所有文章</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">分类</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Strongswan 编译报错及解决办法</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2026-02-04 14:57:14
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/strongswan/" title="strongswan">
+                    <b>#</b> strongswan
+                  </a>
+                </span>
+                
+              </span>
+          
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/strongswan/" title="strongswan">
+                    #strongswan
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>在编译 Strongswan 时，遇到了一些报错信息，经过排查和解决，记录如下。</p>
+<h2><span id="快速导航">快速导航</span></h2><h3><span id="autogensh-阶段报错">autogen.sh 阶段报错</span></h3><ul>
+<li><a href="#autoconf-%E6%8A%A5%E9%94%99">autoconf 报错</a></li>
+<li><a href="#libtool-%E6%8A%A5%E9%94%99">libtool 报错</a></li>
+<li><a href="#gettext-%E6%8A%A5%E9%94%99">gettext 报错</a></li>
+</ul>
+<h3><span id="configure-阶段报错">configure 阶段报错</span></h3><ul>
+<li><a href="#gperf-%E6%8A%A5%E9%94%99">gperf 报错</a></li>
+<li><a href="#gmp-%E6%8A%A5%E9%94%99">gmp 报错</a></li>
+<li><a href="#ldap-%E6%8A%A5%E9%94%99">ldap 报错</a></li>
+<li><a href="#curl-%E6%8A%A5%E9%94%99">curl 报错</a></li>
+<li><a href="#dns-%E6%8A%A5%E9%94%99">dns 报错</a></li>
+<li><a href="#unbound-%E6%8A%A5%E9%94%99">unbound 报错</a></li>
+<li><a href="#soup-%E6%8A%A5%E9%94%99">soup 报错</a></li>
+<li><a href="#systemd-%E6%8A%A5%E9%94%99">systemd 报错</a></li>
+<li><a href="#libtspi-%E6%8A%A5%E9%94%99">libtspi 报错</a></li>
+<li><a href="#tss2-%E6%8A%A5%E9%94%99">tss2 报错</a></li>
+<li><a href="#json-c-%E6%8A%A5%E9%94%99">json-c 报错</a></li>
+<li><a href="#neo_utl-%E6%8A%A5%E9%94%99">neo_utl 报错</a></li>
+<li><a href="#fcgi-%E6%8A%A5%E9%94%99">fcgi 报错</a></li>
+<li><a href="#mysql-%E6%8A%A5%E9%94%99">mysql 报错</a></li>
+<li><a href="#wolfssl-%E6%8A%A5%E9%94%99">wolfssl 报错</a></li>
+<li><a href="#gcrypt-%E6%8A%A5%E9%94%99">gcrypt 报错</a></li>
+<li><a href="#botan-%E6%8A%A5%E9%94%99">botan 报错</a></li>
+<li><a href="#pcsclite-%E6%8A%A5%E9%94%99">pcsclite 报错</a></li>
+<li><a href="#nm-%E6%8A%A5%E9%94%99">nm 报错</a></li>
+<li><a href="#uci-%E6%8A%A5%E9%94%99">uci 报错</a></li>
+<li><a href="#cutils-%E6%8A%A5%E9%94%99">cutils 报错</a></li>
+<li><a href="#ip4tc-%E6%8A%A5%E9%94%99">ip4tc 报错</a></li>
+<li><a href="#gprbuild-%E6%8A%A5%E9%94%99">gprbuild 报错</a></li>
+<li><a href="#make-%E6%8A%A5%E9%94%99">make 报错</a></li>
+</ul>
+<h3><span id="make-阶段报错">make 阶段报错</span></h3><ul>
+<li><a href="#bison-%E6%8A%A5%E9%94%99">bison 报错</a></li>
+<li><a href="#flex-%E6%8A%A5%E9%94%99">flex 报错</a></li>
+<li><a href="#setuptools-%E6%8A%A5%E9%94%99">setuptools 报错</a></li>
+<li><a href="#gprbuild-%E6%8A%A5%E9%94%99-1">gprbuild 报错</a></li>
+<li><a href="#unwind-%E6%8A%A5%E9%94%99">unwind 报错</a></li>
+<li><a href="#cov-%E6%8A%A5%E9%94%99">cov 报错</a></li>
+<li><a href="#gem-%E6%8A%A5%E9%94%99">gem 报错</a></li>
+<li><a href="#easy_install-%E6%8A%A5%E9%94%99">easy_install 报错</a></li>
+</ul>
+<h2><span id="详细错误信息">详细错误信息</span></h2><h3><span id="autogensh-报错">autogen.sh 报错</span></h3><hr>
+<h4><span id="1-autoconf-报错">1. <code>autoconf</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Command <span class="string">&#x27;autoreconf&#x27;</span> not found, but can be installed with:</span><br><span class="line">apt install autoconf</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：autoreconf 是 autoconf 工具的一个子命令，用于自动生成 configure 脚本。如果没有安装 autoreconf，就会报错。</p>
+</li>
+<li><p>解决办法：安装 autoconf 工具</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install autoconf</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="2-libtool-报错">2. <code>libtool</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Can<span class="string">&#x27;t exec &quot;libtoolize&quot;: 没有那个文件或目录 at /usr/share/autoconf/Autom4te/FileUtils.pm line 345, &lt;GEN3&gt; line 4.</span></span><br><span class="line"><span class="string">autoreconf: failed to run libtoolize: No such file or directory</span></span><br><span class="line"><span class="string">autoreconf: libtoolize is needed because this package uses Libtool</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：libtoolize 是 libtool 工具的一个子命令，用于自动生成 libtool 脚本。如果没有安装 libtoolize，就会报错。</p>
+</li>
+<li><p>解决办法：安装 libtool 工具</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install libtool</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="3-gettext-报错">3. <code>gettext</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">configure.ac:379: error: possibly undefined macro: AC_LIB_PREFIX</span><br><span class="line">     If this token and others are legitimate, please use m4_pattern_allow.</span><br><span class="line">     See the Autoconf documentation.</span><br><span class="line">autoreconf: /usr/bin/autoconf failed with <span class="built_in">exit</span> status: 1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：用于解决 AC_LIB_PREFIX 宏没有定义问题，以前的解决方法是：<code>cp -rf /usr/share/aclocal/* /usr/local/share/aclocal/</code> 但是不能从根源上解决问题</p>
+</li>
+<li><p>解决办法：安装 gettext</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install gettext</span><br></pre></td></tr></table></figure>
+
+<h3><span id="configure-报错">configure 报错</span></h3><hr>
+<h4><span id="1-gperf-报错">1. <code>gperf</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking gperf len <span class="built_in">type</span>... not found</span><br><span class="line">configure: error: GNU gperf required to generate e.g. ./src/libstrongswan/crypto/proposal/proposal_keywords_static.c</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：编译过程中需要使用 GNU gperf 生成一些静态文件</p>
+</li>
+<li><p>解决办法：安装 gperf</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install gperf</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="2-gmp-报错">2. <code>gmp</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: GNU Multi Precision library gmp not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：Strongswan 需要 GNU Multi Precision 库来进行大数运算</p>
+</li>
+<li><p>解决办法：安装 gmp 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libgmp-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="3-ldap-报错">3. <code>ldap</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> ldap_init <span class="keyword">in</span> -lldap... no</span><br><span class="line">configure: error: LDAP library ldap not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：LDAP 支持库未找到</p>
+</li>
+<li><p>解决办法：安装 LDAP 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libldap2-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="4-curl-报错">4. <code>curl</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> curl_global_init <span class="keyword">in</span> -lcurl... no</span><br><span class="line">configure: error: CURL library curl not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：CURL 支持库未找到</p>
+</li>
+<li><p>解决办法：安装 CURL 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libcurl4-openssl-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="5-dns-报错">5. <code>dns</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> ldns_rr_get_type <span class="keyword">in</span> -lldns... no</span><br><span class="line">configure: error: UNBOUND library ldns not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：DNS 支持库未找到</p>
+</li>
+<li><p>解决办法：安装 DNS 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libldns-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="6-unbound-报错">6. <code>unbound</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> ub_ctx_create <span class="keyword">in</span> -lunbound... no</span><br><span class="line">configure: error: UNBOUND library libunbound not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：Unbound DNS 解析库未找到  </p>
+</li>
+<li><p>解决办法：安装 Unbound 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libunbound-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="7-soup-报错">7. <code>soup</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (libsoup-2.4) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;libsoup-2.4&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables soup_CFLAGS</span><br><span class="line">and soup_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：libsoup-2.4 库未找到</p>
+</li>
+<li><p>解决办法：安装 libsoup2.4 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libsoup2.4-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="8-systemd-报错">8. <code>systemd</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (libsystemd-daemon) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;libsystemd-daemon&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables systemd_daemon_CFLAGS</span><br><span class="line">and systemd_daemon_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：libsystemd-daemon 库未找到</p>
+</li>
+<li><p>解决办法：安装 systemd 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libsystemd-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="9-libtspi-报错">9. <code>libtspi</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">configure: error: TrouSerS library libtspi not found</span><br><span class="line">make: *** 没有指明目标并且找不到 makefile。 停止。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：TrouSerS TPM 库未找到</p>
+</li>
+<li><p>解决办法：安装 TrouSerS 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install trousers libtspi-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="10-tss2-报错">10. <code>tss2</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">configure: error: <span class="keyword">in</span> `/home/share/qin.yuan/compile/module/wtd/ike/strongswan-5.9.6<span class="string">&#x27;:</span></span><br><span class="line"><span class="string">configure: error: no TSS2 TCTI or SAPI libraries detected</span></span><br><span class="line"><span class="string">See `config.log&#x27;</span> <span class="keyword">for</span> more details</span><br><span class="line">make: *** 没有指明目标并且找不到 makefile。 停止。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：TSS2 (Trusted Software Stack 2.0) 库未找到</p>
+</li>
+<li><p>解决办法：安装 TSS2 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libtss2-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="11-json-c-报错">11. <code>json-c</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (json) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;json&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables json_CFLAGS</span><br><span class="line">and json_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：json-c 库未找到</p>
+</li>
+<li><p>解决办法：安装 json-c 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libjson-c-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="12-neo_utl-报错">12. <code>neo_utl</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">configure: error: ClearSilver library neo_utl not found!</span><br><span class="line">make: *** 没有指明目标并且找不到 makefile。 停止。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：ClearSilver 库未找到</p>
+</li>
+<li><p>解决办法：安装 ClearSilver 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install clearsilver-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="13-fcgi-报错">13. <code>fcgi</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">configure: error: FastCGI library fcgi not found!</span><br><span class="line">make: *** 没有指明目标并且找不到 makefile。 停止。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：FastCGI 库未找到</p>
+</li>
+<li><p>解决办法：安装 FCGI 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libfcgi-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="14-mysql-报错">14. <code>mysql</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">configure: error: mysql_config not found!</span><br><span class="line">make: *** 没有指明目标并且找不到 makefile。 停止。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：MySQL 配置工具未找到</p>
+</li>
+<li><p>解决办法：安装 MySQL 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libmysqlclient-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="15-wolfssl-报错">15. <code>wolfssl</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (wolfssl) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;wolfssl&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables wolfssl_CFLAGS</span><br><span class="line">and wolfssl_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：WolfSSL 库未找到</p>
+</li>
+<li><p>解决办法：安装 WolfSSL 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libwolfssl-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="16-gcrypt-报错">16. <code>gcrypt</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> gcry_control <span class="keyword">in</span> -lgcrypt... no</span><br><span class="line">configure: error: gcrypt library not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：Gcrypt 库未找到</p>
+</li>
+<li><p>解决办法：安装 Gcrypt 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libgcrypt-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="17-botan-报错">17. <code>botan</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (botan-2) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;botan-2&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables botan_CFLAGS</span><br><span class="line">and botan_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：Botan-2 加密库未找到</p>
+</li>
+<li><p>解决办法：安装 Botan-2 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libbotan-2-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="18-pcsclite-报错">18. <code>pcsclite</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (libpcsclite) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;libpcsclite&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables pcsclite_CFLAGS</span><br><span class="line">and pcsclite_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：PCSClite 智能卡库未找到</p>
+</li>
+<li><p>解决办法：安装 PCSClite 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libpcsclite-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="19-nm-报错">19. <code>nm</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (gthread-2.0 libnm) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;libnm&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables nm_CFLAGS</span><br><span class="line">and nm_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：NetworkManager 库未找到</p>
+</li>
+<li><p>解决办法：安装 NetworkManager 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libnm-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="20-uci-报错">20. <code>uci</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">configure: error: UCI library libuci not found</span><br><span class="line">make: *** 没有指明目标并且找不到 makefile。 停止。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：UCI (Unified Configuration Interface) 库未找到</p>
+</li>
+<li><p>解决办法：<br>参考以下博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/liangcsdn111/article/details/122256751">ubuntu20编译UCI-详细步骤记录_uci bianyi-CSDN博客</a><br>安装lua libubix libuci</p>
+</li>
+</ul>
+<hr>
+<h4><span id="21-cutils-报错">21. <code>cutils</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> property_get <span class="keyword">in</span> -lcutils... no</span><br><span class="line">configure: error: Android library libcutils not found</span><br><span class="line">make: *** 没有指明目标并且找不到 makefile。 停止。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：Android libcutils 库未找到</p>
+</li>
+<li><p>解决办法：安装 Android libcutils 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install android-libcutils-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="22-ip4tc-报错">22. <code>ip4tc</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Package requirements (libip4tc) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">&#x27;libip4tc&#x27;</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables libiptc_CFLAGS</span><br><span class="line">and libiptc_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：IPTables 库未找到</p>
+</li>
+<li><p>解决办法：安装 IPTables 开发包</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libip4tc-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="23-gprbuild-报错">23. <code>gprbuild</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> gprbuild... no</span><br><span class="line">configure: error: gprbuild not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：这个错误表明系统缺少 Ada 项目的构建工具 gprbuild</p>
+</li>
+<li><p>解决办法：安装 gprbuild</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install gprbuild</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="24-make-报错">24. <code>make</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config.log 出现很多基础函数库和头文件找不到；</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：缺少基础的编译工具</p>
+</li>
+<li><p>解决办法：安装 make</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install make</span><br></pre></td></tr></table></figure>
+
+<h3><span id="make-报错">make 报错</span></h3><hr>
+<h4><span id="1-bison-报错">1. <code>bison</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  YACC     settings/settings_parser.c</span><br><span class="line">../../ylwrap: 行 176: yacc：未找到命令</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：这个错误表明系统缺少 yacc 解析器生成器工具</p>
+</li>
+<li><p>解决办法：安装 bison</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install bison</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="2-flex-报错">2. <code>flex</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc: error: settings/settings_lexer.c: 没有那个文件或目录</span><br><span class="line">gcc: fatal error: no input files</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>错误原因：这个错误表明系统缺少由 flex 生成的词法分析器文件。需要先安装词法分析器生成工具并重新生成文件</p>
+</li>
+<li><p>解决办法：安装 flex</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install flex</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="3-setuptools-报错">3. <code>setuptools</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;setup.py&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from setuptools import setup</span><br><span class="line">ModuleNotFoundError: No module named <span class="string">&#x27;setuptools&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解决办法：安装 setuptools</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install --upgrade setuptools</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="4-gprbuild-报错">4. <code>gprbuild</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gprconfig: can<span class="string">&#x27;t find a native toolchain for language &#x27;</span>ada<span class="string">&#x27;</span></span><br><span class="line"><span class="string">build_common.gpr:1:06: unknown project file: &quot;tkmrpc_client&quot;</span></span><br><span class="line"><span class="string">build_common.gpr:2:06: unknown project file: &quot;tkmrpc_server-ees&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解决办法：安装 gnat 和 gprbuild</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install gnat gprbuild</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="5-unwind-报错">5. <code>unwind</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> unw_backtrace <span class="keyword">in</span> -lunwind... no</span><br><span class="line">configure: error: libunwind not found!</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解决办法：安装 libunwind 开发包</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install libunwind-dev</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="6-cov-报错">6. <code>cov</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> lcov... no</span><br><span class="line">configure: error: lcov not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解决办法：安装 lcov</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install lcov</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="7-gem-报错">7. <code>gem</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> gem... no</span><br><span class="line">configure: error: RubyGems package manager not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解决办法：安装 Ruby</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install ruby-full</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4><span id="8-easy_install-报错">8. <code>easy_install</code> 报错</span></h4><ul>
+<li>错误信息：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> easy_install... no</span><br><span class="line">configure: error: Python easy_install not found</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解决办法：安装 Python setuptools</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这个方法可能不管用</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install python-setuptools</span><br><span class="line"></span><br><span class="line"><span class="comment"># 替代方法</span></span><br><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install curl</span><br><span class="line">curl https://bootstrap.pypa.io/ez_setup.py --output ez_setup.py</span><br><span class="line"><span class="built_in">sudo</span> python ez_setup.py</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3><span id="未解决问题">未解决问题</span></h3><hr>
+<h4><span id="1-windows-编译问题">1. Windows 编译问题</span></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">找不到 <span class="string">&quot;win32_socket.h&quot;</span></span><br></pre></td></tr></table></figure>
+<p>使用 <code>--disable-winhttp</code> 选项，禁用 Windows HTTP 支持</p>
+<hr>
+<h4><span id="2-汇编问题">2. 汇编问题</span></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">汇编问题</span><br></pre></td></tr></table></figure>
+<p>使用 <code>--disable-padlock</code> 选项，禁用 Padlock 支持</p>
+<hr>
+<h4><span id="3-macos-编译问题">3. macOS 编译问题</span></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">macOS 编译问题</span><br></pre></td></tr></table></figure>
+<p>使用 <code>--disable-keychain</code> 选项，禁用 Keychain 支持</p>
+<hr>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2026/02/01/2-Hexo-blog-2-%E6%AD%A5%E9%AA%A4%E7%AE%80%E5%8C%96/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2026-02-04 14:57:14
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/strongswan/" title="strongswan">
+                        <b>#</b> strongswan
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/strongswan/" title="strongswan">
+                        #strongswan
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-text">快速导航</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">autogen.sh 阶段报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">configure 阶段报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">make 阶段报错</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-text">详细错误信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">autogen.sh 报错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1. autoconf 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2. libtool 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3. gettext 报错</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">configure 报错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1. gperf 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2. gmp 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3. ldap 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4. curl 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5. dns 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6. unbound 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">7. soup 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">8. systemd 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">9. libtspi 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">10. tss2 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">11. json-c 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">12. neo_utl 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">13. fcgi 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">14. mysql 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">15. wolfssl 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">16. gcrypt 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">17. botan 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">18. pcsclite 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">19. nm 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">20. uci 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">21. cutils 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">22. ip4tc 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">23. gprbuild 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">24. make 报错</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">make 报错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1. bison 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2. flex 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3. setuptools 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4. gprbuild 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5. unwind 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6. cov 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">7. gem 报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">8. easy_install 报错</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">未解决问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1. Windows 编译问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2. 汇编问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3. macOS 编译问题</span></a></li></ol></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        <!-- 确保 md5 库在使用前已加载 -->
+
+  <script src="/js/md5.min.js"></script>
+
+
+
+
+
+
+
+
+
+  <div id="gitalk-container"></div>
+
+  <script>
+    function loadGitalkSuc() {
+      const gitalk = new Gitalk({
+        clientID: 'Ov23lizAsDMKREPv2ztl',
+        clientSecret: '735cce0fbe51ec8c0e1deb5edade6ae9799e00b2',
+        repo: 'gitalk-comments',
+        owner: 'Feng-jianwutong',
+        admin: ['Feng-jianwutong'],
+        id: md5(location.pathname),
+        distractionFreeMode: false
+      })
+
+      gitalk.render('gitalk-container')
+    }
+  </script>
+  
+    <link rel="stylesheet" href="/plugins/gitalk.css">
+    <script type="text/javascript" src="/plugins/gitalk.min.js" onload="loadGitalkSuc(this)"></script>
+  
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2026 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+    <div class="footer-views">
+      
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+      
+          本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        
+      
+          本站访客数<span id="busuanzi_value_site_uv"></span>人
+        
+      
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+
+      </div>
+    </div>
+  
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body>
+</html>
